@@ -30,9 +30,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: Text('Flutter Web App'),
-        ),
         body: FutureBuilder<void>(
           future: _initNativeProperties(),
           builder: (context, snapshot) {
@@ -43,10 +40,19 @@ class MyApp extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Container(
-                        child: Text('Welcome to Flutter Web App'),
+                        child: Text('Welcome to Flutter App',
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),),
                       ),
                       Container(
-                          child: Text( fetchedString ?? 'String not yet received!')
+                          child: Text( fetchedString,
+                              style: TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 15,
+                              ),
+                          ),
                       ),
                     ],
                   ),
