@@ -1,3 +1,4 @@
+var dsBridge = require("dsbridge")
 function getStringMap() {
     let host = new Map() ;
     try {
@@ -13,7 +14,8 @@ function getStringMap() {
 function getString() {
 let host = '' ;
     try {
-        host = NativeFlutterInterface.getString() ;
+       // host = NativeFlutterInterface.getString() ;
+       host = dsBridge.call("getString", "abc");
     }
     catch (e) {
         console.log(`NativeFlutterInterface not found !`);
