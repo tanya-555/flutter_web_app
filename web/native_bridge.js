@@ -11,6 +11,15 @@ function getStringMap() {
     return host;
 }
 
+function sendSeamlessLoginRequest() {
+   try {
+           dsBridge.call("sendSeamlessLoginRequest", "") ;
+       }
+       catch (e) {
+           console.log(`NativeFlutterInterface not found !`);
+       }
+}
+
 function getString() {
 let host = '' ;
     try {

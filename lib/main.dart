@@ -1,7 +1,9 @@
 @JS()
 library t;
 
+import 'package:async/async.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_web_app/constants.dart';
 import 'package:js/js.dart';
 import 'dart:js' as js;
 
@@ -9,16 +11,21 @@ const String flutterWeb = 'from Flutter';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  js.context['functionFromNative'] = (value) {
-   // return flutterWeb;
-    //getMpinStatus();
-    if(value) {
-      return "yes";
-    } else {
-      return "no";
-    }
-
+  js.context['propertiesFromNative'] = (hostname, token, customerId) {
+    Constants.token = token;
+    Constants.hostname = hostname;
+    Constants.custId = customerId;
   };
+  // js.context['functionFromNative'] = (value) {
+  //  // return flutterWeb;
+  //   //getMpinStatus();
+  //   if(value) {
+  //     return "yes";
+  //   } else {
+  //     return "no";
+  //   }
+  //
+  // };
   runApp(MyApp());
 }
 
@@ -28,8 +35,8 @@ external bool getMpinStatus();
 @JS('getString')
 external String _getString();
 
-@JS('getStringMap')
-external Map<String, String> _getStringMap();
+@JS('sendSeamlessLoginRequest')
+external void _sendSeamlessLoginRequest();
 
 class MyApp extends StatelessWidget {
 
@@ -37,8 +44,40 @@ class MyApp extends StatelessWidget {
   String fetchedString='';
 
   Future<void> _initNativeProperties() async {
+    _sendSeamlessLoginRequest();
+    //_sendSeamlessLoginRequest();
+    // Future<void> seamlessLoginFuture = _seamlessLoginFuture();
+    // //Future<void> nativePropertiesFuture = _getNativePropertiesFuture();
+    // Future<void> validateTokenFuture = _getValidateTokenFuture();
+    // FutureGroup futureGroup = FutureGroup();
+    // futureGroup.add(seamlessLoginFuture);
+    // //futureGroup.add(nativePropertiesFuture);
+    // futureGroup.add(validateTokenFuture);
+    // futureGroup.close();
     //fetchedStringMap = _getStringMap();
-    fetchedString = _getString();
+    //fetchedString = _getString();
+    //  _sendSeamlessLoginRequest();
+    // js.context['propertiesFromNative'] = (hostname, token, customerId) {
+    //
+    // };
+  }
+  
+  Future<void> _seamlessLoginFuture() async {
+    _sendSeamlessLoginRequest();
+  }
+  
+  // Future<void> _getNativePropertiesFuture() async {
+  //   js.context['propertiesFromNative'] = (hostname, token, customerId) {
+  //     this.token = token;
+  //     hostName = hostname;
+  //     custId = customerId;
+  //   };
+  // }
+
+  Future<void> _getValidateTokenFuture() async {
+    Future.delayed(Duration(milliseconds: 1000), () {
+      String authToken = '';
+    });
   }
 
   @override
@@ -62,7 +101,7 @@ class MyApp extends StatelessWidget {
                         ),),
                       ),
                       Container(
-                          child: Text( fetchedString,
+                          child: Text( Constants.token,
                               style: TextStyle(
                                 fontWeight: FontWeight.normal,
                                 fontSize: 15,
@@ -73,7 +112,11 @@ class MyApp extends StatelessWidget {
                   ),
                 );
               default :
-                return CircularProgressIndicator();
+                return Center(
+                  child: CircularProgressIndicator(
+                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.lightBlueAccent),
+                  ),
+                );
             }
           },
         ),
