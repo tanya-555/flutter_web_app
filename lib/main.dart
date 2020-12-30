@@ -9,20 +9,35 @@ const String flutterWeb = 'from Flutter';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  js.context['functionFromNative'] = () {
-    return flutterWeb;
+  js.context['functionFromNative'] = (value) {
+   // return flutterWeb;
+    //getMpinStatus();
+    if(value) {
+      return "yes";
+    } else {
+      return "no";
+    }
+
   };
   runApp(MyApp());
 }
 
+@JS('getMpinStatus')
+external bool getMpinStatus();
+
 @JS('getString')
 external String _getString();
 
+@JS('getStringMap')
+external Map<String, String> _getStringMap();
+
 class MyApp extends StatelessWidget {
 
-  String fetchedString;
+  Map<String,String> fetchedStringMap = {};
+  String fetchedString='';
 
   Future<void> _initNativeProperties() async {
+    //fetchedStringMap = _getStringMap();
     fetchedString = _getString();
   }
 
