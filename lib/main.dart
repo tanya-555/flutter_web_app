@@ -102,7 +102,7 @@ class _MyAppState extends State<MyApp> {
       height: double.infinity,
       child: Center(
         child: RaisedButton(
-          onPressed: () { 
+          onPressed: () {
 
           },
           child: Text('Start Mpin Flow'),
