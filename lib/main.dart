@@ -49,19 +49,10 @@ class _MyAppState extends State<MyApp> {
 
 
   Future<void> loginRequest()async{
-     js.context['propertiesFromNative'] = (token, hostname, custId) {
+     js.context['propertiesFromNative'] = (token) {
        Constants.token = token;
-       Constants.hostname = hostname;
-       Constants.customerId = custId;
-       validateToken((status) {
-         if(status) {
-           setState(() {
-             _onCreditCardLoginSuccess();
-             isLoginComplete = true;
-           });
-         } else {
-           _closeFlutterView();
-         }
+       setState(() {
+         isLoginComplete = true;
        });
      };
      _sendSeamlessLoginRequest();
@@ -86,7 +77,7 @@ class _MyAppState extends State<MyApp> {
         Container(
           width: double.infinity,
           height: double.infinity,
-          child: Center(child: Text("Token : "+Constants.hostname)),) :
+          child: Center(child: Text("Token : "+Constants.token)),) :
         Container(
           width: double.infinity,
           height: double.infinity,
