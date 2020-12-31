@@ -11,9 +11,28 @@ function getStringMap() {
     return host;
 }
 
+
+function closeFlutterView() {
+    try {
+        dsBridge.call("closeFlutterView", "");
+    }
+    catch (e) {
+        console.log(`NativeFlutterInterface not found !`);
+    }
+}
+
 function sendSeamlessLoginRequest() {
    try {
            dsBridge.call("sendSeamlessLoginRequest", "") ;
+       }
+       catch (e) {
+           console.log(`NativeFlutterInterface not found !`);
+       }
+}
+
+function onCreditCardLoginSuccess() {
+   try {
+           dsBridge.call("onCreditCardLoginSuccess", "") ;
        }
        catch (e) {
            console.log(`NativeFlutterInterface not found !`);

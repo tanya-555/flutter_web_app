@@ -1,5 +1,5 @@
 class Constants {
   static String token = 'Not Received yet';
-  static String hostname = '1';
-  static String custId = '2';
+  static String hostname = 'Not Received yet';
+  static String customerId = 'Not received yet';
 }

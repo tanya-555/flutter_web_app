@@ -11,19 +11,26 @@ const String flutterWeb = 'from Flutter';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  js.context['propertiesFromNative'] = (hostname, token, customerId) {
-    Constants.token = token;
-    Constants.hostname = hostname;
-    Constants.custId = customerId;
-  };
+  // js.context['propertiesFromNative'] = (hostname, token, customerId) {
+  //   Constants.token = token;
+  //   Constants.hostname = hostname;
+  //   Constants.custId = customerId;
+  //   js.context.callMethod('alertMsg', [token]);
+  // };
   runApp(MyApp());
 }
 
 @JS('getString')
 external String _getString();
 
+@JS('closeFlutterView')
+external void _closeFlutterView();
+
 @JS('sendSeamlessLoginRequest')
 external void _sendSeamlessLoginRequest();
+
+@JS('onCreditCardLoginSuccess')
+external void _onCreditCardLoginSuccess();
 
 class MyApp extends StatefulWidget {
 
@@ -40,10 +47,31 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
+
   Future<void> loginRequest()async{
-    await _sendSeamlessLoginRequest();
-    setState(() {
-      isLoginComplete = true;
+     js.context['propertiesFromNative'] = (token, hostname, custId) {
+       Constants.token = token;
+       Constants.hostname = hostname;
+       Constants.customerId = custId;
+       validateToken((status) {
+         if(status) {
+           setState(() {
+             _onCreditCardLoginSuccess();
+             isLoginComplete = true;
+           });
+         } else {
+           _closeFlutterView();
+         }
+       });
+     };
+     _sendSeamlessLoginRequest();
+  }
+
+  Future<void> validateToken(Function function) async{
+    bool status = false;
+    Future.delayed(Duration(milliseconds: 1000), () {
+      status = true;
+      function.call(status);
     });
   }
 
@@ -51,11 +79,14 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        appBar: AppBar(
+          title: Text('Credit Card'),
+        ),
         body: isLoginComplete ?
         Container(
           width: double.infinity,
           height: double.infinity,
-          child: Center(child: Text("Token : "+Constants.token)),) :
+          child: Center(child: Text("Token : "+Constants.hostname)),) :
         Container(
           width: double.infinity,
           height: double.infinity,
