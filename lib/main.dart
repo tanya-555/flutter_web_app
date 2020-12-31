@@ -83,14 +83,30 @@ class _MyAppState extends State<MyApp> {
           title: Text('Credit Card'),
         ),
         body: isLoginComplete ?
-        Container(
-          width: double.infinity,
-          height: double.infinity,
-          child: Center(child: Text("Token : "+Constants.hostname)),) :
-        Container(
+            _showWidget();
+        // Container(
+        //   width: double.infinity,
+        //   height: double.infinity,
+        //   child: Center(child: Text("Token : "+Constants.hostname)),)
+       : Container(
           width: double.infinity,
           height: double.infinity,
           child: Center(child: Text("Loading ...")),)
+      ),
+    );
+  }
+
+  Widget _showWidget() {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      child: Center(
+        child: RaisedButton(
+          onPressed: () { 
+
+          },
+          child: Text('Start Mpin Flow'),
+        ),
       ),
     );
   }
