@@ -1,9 +1,9 @@
 @JS()
 library t;
 
-import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_web_app/constants.dart';
+import 'package:flutter_web_app/first_screen.dart';
 import 'package:js/js.dart';
 import 'dart:js' as js;
 
@@ -23,8 +23,11 @@ Future main() async {
 @JS('getString')
 external String _getString();
 
-@JS('closeFlutterView')
-external void _closeFlutterView();
+@JS('getMpinStatus')
+external String _getMpinStatus();
+
+@JS('closeCreditCardModule')
+external void _closeCreditCardModule();
 
 @JS('sendSeamlessLoginRequest')
 external void _sendSeamlessLoginRequest();
@@ -40,6 +43,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool isLoginComplete = false;
+  String val = "Mpin not verified yet";
 
   @override
   void initState() {
@@ -49,10 +53,20 @@ class _MyAppState extends State<MyApp> {
 
 
   Future<void> loginRequest()async{
-     js.context['propertiesFromNative'] = (token, hostname, custId) {
+    js.context['mpinStatus'] = (status) {
+      if(status) {
+        onMpinAuthenticationSuccess(() {
+          setState(() {
+            val = "Mpin verification success" + Constants.deviceType.toString();
+          });
+        });
+      }
+    };
+     js.context['partnerApplicationData'] = (token, hostname, deviceType, custId) {
        Constants.token = token;
        Constants.hostname = hostname;
        Constants.customerId = custId;
+       Constants.deviceType = deviceType;
        validateToken((status) {
          if(status) {
            setState(() {
@@ -60,7 +74,7 @@ class _MyAppState extends State<MyApp> {
              isLoginComplete = true;
            });
          } else {
-           _closeFlutterView();
+           _closeCreditCardModule();
          }
        });
      };
@@ -75,38 +89,64 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  Future<void> onMpinAuthenticationSuccess(Function function) async {
+    Future.delayed(Duration(milliseconds: 1000), () {
+      function.call();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Credit Card'),
+      routes: {
+        FirstScreen.routeName: (context) => FirstScreen(),
+      },
+      home: Builder(
+        builder: (context) =>
+        Scaffold(
+          appBar: AppBar(
+            title: Text('Credit Card'),
+          ),
+          body: isLoginComplete ?
+              _showWidget(context)
+          // Container(
+          //   width: double.infinity,
+          //   height: double.infinity,
+          //   child: Center(child: Text("Token : "+Constants.hostname)),)
+         : Container(
+            width: double.infinity,
+            height: double.infinity,
+            child: Center(child: Text("Loading ...")),)
         ),
-        body: isLoginComplete ?
-            _showWidget();
-        // Container(
-        //   width: double.infinity,
-        //   height: double.infinity,
-        //   child: Center(child: Text("Token : "+Constants.hostname)),)
-       : Container(
-          width: double.infinity,
-          height: double.infinity,
-          child: Center(child: Text("Loading ...")),)
       ),
     );
   }
 
-  Widget _showWidget() {
+  Widget _showWidget(BuildContext context) {
     return Container(
       width: double.infinity,
       height: double.infinity,
-      child: Center(
-        child: RaisedButton(
-          onPressed: () {
-
-          },
-          child: Text('Start Mpin Flow'),
-        ),
+      child: Column(
+        children: [
+          RaisedButton(
+            onPressed: () {
+              _getMpinStatus();
+            },
+            child: Text('Start Mpin Flow'),
+          ),
+          Text(
+            val
+          ),
+          SizedBox(
+            height: 80.0,
+          ),
+          RaisedButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(FirstScreen.routeName);
+            },
+            child: Text('Continue'),
+          ),
+        ],
       ),
     );
   }

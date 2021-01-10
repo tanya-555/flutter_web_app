@@ -12,9 +12,9 @@ function getStringMap() {
 }
 
 
-function closeFlutterView() {
+function closeCreditCardModule() {
     try {
-        dsBridge.call("closeFlutterView", "");
+        dsBridge.call("credit_card.closeCreditCardModule", "");
     }
     catch (e) {
         console.log(`NativeFlutterInterface not found !`);
@@ -23,7 +23,7 @@ function closeFlutterView() {
 
 function sendSeamlessLoginRequest() {
    try {
-           dsBridge.call("sendSeamlessLoginRequest", "") ;
+           dsBridge.call("credit_card.sendSeamlessLoginRequest", "") ;
        }
        catch (e) {
            console.log(`NativeFlutterInterface not found !`);
@@ -32,7 +32,7 @@ function sendSeamlessLoginRequest() {
 
 function onCreditCardLoginSuccess() {
    try {
-           dsBridge.call("onCreditCardLoginSuccess", "") ;
+           dsBridge.call("credit_card.onCreditCardLoginSuccess", "") ;
        }
        catch (e) {
            console.log(`NativeFlutterInterface not found !`);
@@ -53,13 +53,19 @@ let host = '' ;
 }
 
 function getMpinStatus() {
-   let host = false ;
     try {
-        host = NativeFlutterInterface.getMpinStatus;
+        dsBridge.call("credit_card.onMpinAuthenticationRequest", "");
     }
     catch (e) {
         console.log(`NativeFlutterInterface not found !`);
     }
-    console.log(`JS : Returning HOST : ${host}`);
-    return host;
+}
+
+function startHelpSupportFlow(screenType) {
+    try {
+        dsBridge.call("credit_card.startHelpSupportFlow", screenType);
+    }
+    catch (e) {
+        console.log(`NativeFlutterInterface not found !`);
+    }
 }
