@@ -69,3 +69,36 @@ function startHelpSupportFlow(screenType) {
         console.log(`NativeFlutterInterface not found !`);
     }
 }
+
+function startMpin() {
+    try {
+        dsBridge.call("credit_card.startMpin", "");
+    }
+    catch (e) {
+        console.log(`NativeFlutterInterface not found !`);
+    }
+}
+
+function sendPaymentData(paymentData) {
+//    object = {};
+//    map.forEach((value, key) => {
+//        var keys = key.split('.'),
+//            last = keys.pop();
+//        keys.reduce((r, a) => r[a] = r[a] || {}, object)[last] = value;
+//    });
+    try {
+        dsBridge.call("credit_card.sendPaymentData", paymentData);
+    }
+    catch (e) {
+        console.log(`NativeFlutterInterface not found !`);
+    }
+}
+
+function isNetworkAvailable() {
+    try {
+        dsBridge.call("credit_card.isNetworkAvailable", "");
+    }
+    catch (e) {
+        console.log(`NativeFlutterInterface not found !`);
+    }
+}

@@ -6,6 +6,7 @@ import 'package:flutter_web_app/constants.dart';
 import 'package:flutter_web_app/first_screen.dart';
 import 'package:js/js.dart';
 import 'dart:js' as js;
+import 'dart:convert';
 
 const String flutterWeb = 'from Flutter';
 
@@ -25,6 +26,9 @@ external String _getString();
 
 @JS('getMpinStatus')
 external String _getMpinStatus();
+
+@JS('sendPaymentData')
+external String _sendPaymentData(paymentData);
 
 @JS('closeCreditCardModule')
 external void _closeCreditCardModule();
@@ -62,7 +66,13 @@ class _MyAppState extends State<MyApp> {
         });
       }
     };
-     js.context['partnerApplicationData'] = (token, hostname, deviceType, custId) {
+    js.context['firstTimeLoginStatus'] = (status) {
+      setState(() {
+        val = status;
+      });
+    };
+     js.context['partnerApplicationData'] = (token, hostname, deviceType, density, deviceModel,
+         sdkVersion, osVersion, uuid, partnerVersion, custId) {
        Constants.token = token;
        Constants.hostname = hostname;
        Constants.customerId = custId;
@@ -142,6 +152,9 @@ class _MyAppState extends State<MyApp> {
           ),
           RaisedButton(
             onPressed: () {
+              // var paymentMap = new Map();
+              // paymentMap.putIfAbsent('abc', () => 'efg');
+              // _sendPaymentData(jsonEncode(paymentMap));
               Navigator.of(context).pushNamed(FirstScreen.routeName);
             },
             child: Text('Continue'),
